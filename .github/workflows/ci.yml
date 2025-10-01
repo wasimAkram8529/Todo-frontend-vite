@@ -11,7 +11,7 @@ on:
       - main
     types:
       - opened
-      - closed
+      - synchronize
 
 jobs:
   build:
@@ -26,16 +26,22 @@ jobs:
           node-version: 22
       
       - name: Install dependency
-        run: npm i
+        run: npm ci
 
       - name: build project
         run: npm run build
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Run lint
+        run: npm run lint
 
       - name: upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: react-build
-          path: build
+          path: dist
       
       - name: Send Email Notification
         if: success()

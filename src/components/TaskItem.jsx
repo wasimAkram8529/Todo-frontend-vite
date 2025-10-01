@@ -26,7 +26,7 @@ const TaskItem = ({ task, fetchTasks }) => {
         <Link to={`/edit?id=${_id}`} className="edit-link">
           <i className="fas fa-edit"></i>
         </Link>
-        <button className="delete-btn" onClick={handleDelete}>
+        <button className="delete-btn" onClick={handleDelete} aria-label="Delete Task">
           <i className="fas fa-trash"></i>
         </button>
       </div>

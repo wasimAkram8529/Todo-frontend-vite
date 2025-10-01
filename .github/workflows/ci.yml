@@ -1,0 +1,51 @@
+name: "CI Pipeline for todo frontend"
+
+on:
+  push:
+    branches:
+      - main
+      - test
+
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - closed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      
+      - name: Install dependency
+        run: npm i
+
+      - name: build project
+        run: npm run build
+
+      - name: upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: react-build
+          path: build
+      
+      - name: Send Email Notification
+        if: success()
+        uses: dawidd6/action-send-mail@v4
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{secrets.EMAIL_USERNAME}}
+          password: ${{secrets.EMAIL_PASSWORD}}
+          subject: React App Build Successful
+          to: ${{secrets.RECEIVER_EMAIL}}
+          from: ${{secrets.EMAIL_USERNAME}}
+          body: "Build job of ${{github.repository}} for Branch: ${{github.ref_name}}  completed successfully!"

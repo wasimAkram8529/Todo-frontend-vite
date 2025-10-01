@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useSearchParams, Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import api from "../api";
 
 const EditTask = () => {
@@ -64,6 +64,7 @@ const EditTask = () => {
         <div className="form-control">
           <label htmlFor="name">Name</label>
           <input
+            id="name"
             type="text"
             name="name"
             className="task-edit-name"
@@ -74,6 +75,7 @@ const EditTask = () => {
         <div className="form-control">
           <label htmlFor="completed">Completed</label>
           <input
+            id="completed"
             type="checkbox"
             name="completed"
             checked={completed}

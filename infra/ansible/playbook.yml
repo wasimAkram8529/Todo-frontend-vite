@@ -1,0 +1,66 @@
+---
+- name: Configure backend server
+  hosts: tag_tf_frontend_instance
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Install required dependency
+      package:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg
+        state: present
+        update_cache: yes
+
+    - name: Install docker engine
+      package:
+        name:
+          - docker.io
+        state: present
+
+    - name: Manage docker services
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Add user to docker group
+      user:
+        name: "{{ ansible_user | default(ansible_env.USER) }}"
+        groups: docker
+        append: yes
+
+    - ec2_instance_info:
+        filters:
+          "tag:Name": tf-backend-instance
+          instance-state-name: running
+        region: us-east-1
+      register: ec2_info
+
+    - name: Stop if instance not found
+      fail:
+        msg: "Backend instance not found"
+      when: ec2_info.instances | length == 0
+
+    - name: print info
+      set_fact:
+        backend_server_ip_address: "{{ ec2_info.instances[0].public_ip_address }}"
+
+    - name: Loging to docker hub
+      community.docker.docker_login:
+        username: "{{ lookup('env', 'USERNAME') }}"
+        password: "{{ lookup('env', 'DOCKER_PASSWORD') }}"
+
+    - name: Start docker container
+      docker_container:
+        name: todo-frontend
+        image: "{{ lookup('env', 'USERNAME') }}/todo-frontend:staging-latest"
+        state: started
+        ports:
+          - "3000:5173"
+        env:
+          API_URL: "http:{{ backend_server_ip_address  }}:5000"
+    

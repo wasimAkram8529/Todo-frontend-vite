@@ -1,4 +1,4 @@
-name: "CI Pipeline for todo frontend"
+name: "CI Pipeline for Build and Test, Build and Push Docker image"
 
 on:
   push:
@@ -44,23 +44,12 @@ jobs:
           name: react-build
           path: dist
 
-      # - name: Send Email Notification
-      #   if: success()
-      #   uses: dawidd6/action-send-mail@v4
-      #   with:
-      #     server_address: smtp.gmail.com
-      #     server_port: 465
-      #     username: ${{secrets.EMAIL_USERNAME}}
-      #     password: ${{secrets.EMAIL_PASSWORD}}
-      #     subject: React App Build Successful
-      #     to: ${{secrets.RECEIVER_EMAIL}}
-      #     from: ${{secrets.EMAIL_USERNAME}}
-      #     body: "Build job of ${{github.repository}} for Branch: ${{github.ref_name}}  completed successfully!"
-
   create-docker-image:
     if: github.ref == 'refs/heads/develop'
     needs: build-and-test
     runs-on: ubuntu-latest
+    environment:
+      name: production
 
     steps:
       - name: Checkout code
@@ -76,6 +65,13 @@ jobs:
         id: vars
         run: echo "SHORT_SHA=${GITHUB_SHA::7}" > $GITHUB_ENV
 
-      - name: Build Docker image
+      - name: Build docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/todo-frontend:staging-${{ env.SHORT_SHA }} .
+          docker build \
+          -t ${{ secrets.DOCKER_USERNAME }}/todo-frontend:staging-${{ env.SHORT_SHA }} \
+          -t ${{ secrets.DOCKER_USERNAME }}/todo-frontend:staging-latest \
+          .
+
+      - name: Push docker image to docker hub
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}/todo-frontend --all-tags

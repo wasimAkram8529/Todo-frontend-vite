@@ -7,7 +7,17 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
+node_modules/
+.env
+infra/ansible/ec2_launch_playbook.yml
+infra/ansible/test.yml
+infra/terraform-backend/
+infra/terraform/.terraform/
+infra/terraform/*.tfvars
+infra/terraform/*..auto.tfvars
+infra/terraform/terraform.tfstate
+infra/terraform/terraform.tfstate.backup
+
 dist
 dist-ssr
 *.local

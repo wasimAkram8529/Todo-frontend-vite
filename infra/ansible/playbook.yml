@@ -62,7 +62,7 @@
         image: "{{ lookup('env', 'USERNAME') }}/todo-frontend:staging-latest"
         state: started
         ports:
-          - "3000:5173"
+          - "80:80"
         env:
-          API_URL: "http:{{ backend_server_ip_address  }}:5000"
+          API_URL: "http://{{ backend_server_ip_address  }}:5000"
     

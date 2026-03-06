@@ -56,6 +56,9 @@
         username: "{{ lookup('env', 'USERNAME') }}"
         password: "{{ lookup('env', 'DOCKER_PASSWORD') }}"
 
+    - name: Remove old image from system
+      command: docker rmi "{{ lookup('env', 'USERNAME') }}/todo-frontend:staging-latest"
+
     - name: Start docker container
       docker_container:
         name: todo-frontend

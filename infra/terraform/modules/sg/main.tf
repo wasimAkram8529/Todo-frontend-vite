@@ -1,9 +1,10 @@
-resource "aws_security_group" "tf-backend-sg" {
-  name = "tf-backend-sg"
+resource "aws_security_group" "tf-frontend-sg" {
+  for_each = var.frontend-allowed-ingress-port
+  name = each.key
   vpc_id = var.tf-vpc-id
 
   dynamic "ingress" {
-    for_each = var.backend-allowed-ingress-port
+    for_each = each.value
 
     content {
       from_port = ingress.value

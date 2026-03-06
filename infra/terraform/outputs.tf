@@ -1,3 +1,3 @@
-# output "tf-backend-instance-public-ip" {
-#   value = module.tf-backend-instance.tf-backend-instance-public-ip
+# output "tf-frontend-instance-public-ip" {
+#   value = module.tf-frontend-instance.tf-frontend-instance-public-ip
 # }

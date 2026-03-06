@@ -17,6 +17,13 @@ FROM nginx:alpine AS runtime
 
 COPY --from=builder /app/dist /usr/share/nginx/html
 
+COPY config.template.js /usr/share/nginx/html/config.template.js
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 EXPOSE 80
+
+ENTRYPOINT ["/bin/sh", "/entrypoint.sh"]
 
 CMD ["nginx", "-g", "daemon off;"]

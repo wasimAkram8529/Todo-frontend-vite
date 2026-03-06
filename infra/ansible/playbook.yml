@@ -64,5 +64,5 @@
         ports:
           - "80:80"
         env:
-          API_URL: "http:{{ backend_server_ip_address  }}:5000"
+          API_URL: "http://{{ backend_server_ip_address  }}:5000"
     

@@ -1,4 +1,4 @@
-variable "tf-backend-sg-id" {
+variable "tf-frontend-sg-id" {
   
 }
 
